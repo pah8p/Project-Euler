@@ -26,7 +26,7 @@ def a(n):
         return _a
     except KeyboardInterrupt:
         print(_n, 100 * _n / n)
-        raise (KeyboardInterrupt)
+        raise KeyboardInterrupt
 
 
 # def a(n):
@@ -76,14 +76,14 @@ def f(n, m):
 
 
 def matrix():
-    for n in range(1, 8):
-        for m in range(6, 7):
+    for n in range(1, 5):
+        for m in range(1, 5):
             x = link_f(10 ** n, 10 ** m)
             print(n, m, sum([v for k, v in x.items()]))
 
 
-N = 10 ** 3
-M = 10 ** 1
+N = 10 ** 4
+M = 10 ** 3
 
 # with euler_tools.Watch('a'):
 #    _a = a(100)
