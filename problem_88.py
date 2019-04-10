@@ -19,7 +19,6 @@ def product_partitions(n):
     partitions = [[n]]
     
     for d in ds:
-        
         sub_partitions = product_partitions(n//d)
         for sub_partition in sub_partitions:
             partitions.append(sorted([d] + sub_partition))

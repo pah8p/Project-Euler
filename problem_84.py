@@ -133,7 +133,7 @@ def roll_dice(sides):
 
 game = Monopoly(6)
 
-res = game.play(1000001)
+res = game.play(10000000)
 
 ##print(game.chest_play/game.chest_hit)
 ##print(game.chance_play/game.chance_hit)

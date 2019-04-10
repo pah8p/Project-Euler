@@ -10,7 +10,7 @@ TEST = [
 ]
 
 def load_matrix():
-    file = 'C:/Users/Pete/AppData/Local/Programs/Python/Python36-32/Scripts/euler/p081_matrix.txt'
+    file = 'p081_matrix.txt'
     with open(file, 'r') as f:
         raw_matrix = f.readlines()
 
@@ -35,7 +35,7 @@ def sum_matrix(m):
             else:
                 m[r][c] += min(m[r-1][c], m[r][c-1])
 
-    for r in m: print(r)
+    #for r in m: print(r)
     #print(m[0])
     return m[-1][-1]
 

@@ -170,6 +170,23 @@ class IntervalWatch(object):
         if elapsed > self.interval:
             print('%s: %s milliseconds' % (self.msg, elapsed))
 
+
+class Memoize(object):
+
+    def __init__(self, f):
+        self.f = f
+        self.cache = {}
+
+    def __call__(self, *args):
+
+        try:
+            return self.cache[args]
+
+        except KeyError:
+            res = self.f(*args)
+            self.cache[args] = res
+            return res
+
 # print(prime_divisors(24))
 # print(all_divisors(24))
 #

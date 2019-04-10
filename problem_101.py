@@ -17,6 +17,7 @@ def fit(n, F):
     while d != [0]:
         d = deriv(diffs[-1])
         diffs.append(d)
+    print(diffs)
     return sum([diff[-1] for diff in diffs])
 
 def sum_bops(n, f):
