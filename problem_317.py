@@ -1,5 +1,8 @@
 
 from math import sin, cos, tan, pi
+from matplotlib import pyplot
+import euler_tools
+from scipy import integrate
 
 Y = 100
 V = 20
@@ -25,56 +28,112 @@ def t_from_theta(theta, phi):
         return pos
     elif neg > 0:
         return neg
-
-'''
-def t_from_theta(theta, phi):
-    t = 0.00001
-    while True:
-        x = r_x(phi, t)
-        y = r_y(phi, t)
-
-        #print(t, x, y, tan(theta), y/x)
-
-        if y < 0:
-            break
-
-        if abs(tan(theta) - y/x) < 1e-3:
-            return t, x, y
-        
-        t += 0.00001
-'''
+    else:
+        print(rad_to_degree(theta), rad_to_degree(phi), pos, neg, a, b, c)
 
 def degree_to_rad(d):
     return d*PI/180
-           
-def r(theta):
+
+def rad_to_degree(r):
+    return 180*r/PI
+
+def max_radius(theta):
     rs = []
-    for d_phi in range(0, 91):
-        phi = degree_to_rad(d_phi)
-        if phi > theta:
-            t = t_from_theta(theta, phi)
-            x = r_x(phi, t)
-            y = r_y(phi, t)
-            rs.append((x**2 + y**2, x, y, t))
+    step = 10
+    for d_phi in range(0, 180*step + 1):
+        phi = degree_to_rad(d_phi/step)
+        t = t_from_theta(theta, phi)
+        x = r_x(phi, t)
+        y = r_y(phi, t)
+        if y > 0:
+            rs.append((x**2 + y**2, x, y, t, phi))
     
-    return max(rs, key=lambda x: x[0])
+    try:
+        max_r = max(rs, key=lambda x: x[0])
+        return max_r
+    except ValueError:
+        return None, None, None, None, None
+  
+def curve():
+    step = 10
+    xs, ys, rs, ps, ts = [], [], [], [], []
+    for _theta in range(0, 90*step + 1):
+        theta = degree_to_rad(_theta/step)
+
+        r, x, y, t, phi = max_radius(theta)
+
+        if r:
+            xs.append(x)
+            ys.append(y)
+            rs.append((x, y))
+            ps.append(phi)
+            ts.append(theta)
+
+    print('y_max', max(ys))
+
+    pyplot.plot(xs, ys)
+    pyplot.show()
+
+    return rs
+
+def _curve(y, points):
+    for p in range(1, len(points)):
+        if points[p][1] > y:
+            x = ((points[p][1] - y)*points[p-1][0] + (y-points[p-1][1])*points[p][0])/(points[p][1]-points[p-1][1])
+            return PI*x**2
+    return None
+
+
+def parabola():
+    xs, ys, rs = [], [] , []
+    for _x in range(0, 10000000):
+        x = _x/1000000
+        
+        xs.append(x)
+        ys.append(100-x**2)
+        rs.append((x, 100-x**2))
+
+        #xs.append(-x)
+        #ys.append(100-x**2)
+        #rs.append((-x, 100-x**2))        
+
+    #pyplot.plot(xs, ys, 'ro')
+    #pyplot.show()
+
+    return rs
 
 def area():
+    rs = curve()   
+    rs.sort(key=lambda r: r[0], reverse=False)
     a = 0
-    step = 1
-    lo = -90*step
-    hi = 90*step
-    for _theta in range(lo, hi):
-        theta = degree_to_rad(_theta/step)
-        a += r(theta)[0]*degree_to_rad(1/step)
+    for n in range(1, len(rs)):
+        y = rs[n][1]
+        dx = rs[n][0] - rs[n-1][0]
+        a += y*dx
     return a
 
 def volume():
-    return 2*PI*area()
+    rs = curve()
+    rs.sort(key=lambda r: r[1], reverse=False)
+    v = 0
+    for n in range(1, len(rs)):
+        x = (rs[n][0] + rs[n-1][0])/2
+        dy = rs[n][1] - rs[n-1][1]
+        v += PI*x**2*dy
+    return v
 
-print(r(PI/4))
-print(area())
-print(volume())
+#parabola()
+
+#print(r(PI/4))
+with euler_tools.Watch():
+
+    points = curve()
+    points.sort(key=lambda r: r[1], reverse=False)
+
+    print(_curve(50, points))
+    print(integrate.quad(_curve, 0, 10, args=(points,)))
+
+    #print(volume())
 
 #print(t_from_theta(PI/4, PI/3))
 
@@ -83,8 +142,13 @@ print(volume())
 #print(_t, r_x(PI/3, _t), r_y(PI/3, _t))
 
 
+#print(quadratic(G/2, V, Y))
 
-
+#pyplot.plot(
+#    [r_x(PI/4, t/100) for t in range(0, 700)],
+#    [r_y(PI/4, t/100) for t in range(0, 700)],
+#)
+#pyplot.show()
 
 
 

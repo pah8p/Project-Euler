@@ -153,7 +153,7 @@ class Watch(object):
 
     def __exit__(self, *args, **kwargs):
         elapsed = (time.time() - self._start) * 1000
-        print('%s: %s miliseconds' % (self.msg, elapsed))
+        print('%s: %s miliseconds' % (self.msg, round(elapsed, 2)))
 
 
 class IntervalWatch(object):
@@ -170,12 +170,24 @@ class IntervalWatch(object):
         if elapsed > self.interval:
             print('%s: %s milliseconds' % (self.msg, elapsed))
 
+def memoize(f, *args):
+    cache = {}
+    def _f(*args):
+        try:
+            return cache[args]
+        except KeyError:
+            z = f(*args)
+            cache[args] = z
+            return z
+    return _f
+
 
 class Memoize(object):
 
     def __init__(self, f):
         self.f = f
         self.cache = {}
+        print('Deprecated, switch to euler_tools.memoize')
 
     def __call__(self, *args):
 
@@ -186,6 +198,7 @@ class Memoize(object):
             res = self.f(*args)
             self.cache[args] = res
             return res
+
 
 # print(prime_divisors(24))
 # print(all_divisors(24))
